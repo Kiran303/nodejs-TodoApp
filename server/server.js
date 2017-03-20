@@ -23,6 +23,15 @@ app.post('/todos',(req,res) =>{
 })
 
 
+app.get('/todos',(req,res)=>{
+    todo.find().then((doc)=>{
+        res.send({doc});
+        console.log('in success');
+    },(err)=>{
+        console.log(err);
+    })
+});
+
 
 
 app.listen(3000 , ()=>{
