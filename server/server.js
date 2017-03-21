@@ -5,6 +5,7 @@ var {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');
 var {todo} = require('./models/todo');
 var {user} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 
 var app = express();
 var port = process.env.PORT || 3000;
@@ -113,19 +114,10 @@ app.post('/users',(req,res) =>{
   })
 });
 
-// app.post('/users', (req, res) => {
-//   var body = _.pick(req.body, ['email', 'password']);
-//   var user = new User(body);
-
-//   user.save().then(() => {
-//     return user.generateAuthToken();
-//   }).then((token) => {
-//     res.header('x-auth', token).send(user);
-//   }).catch((e) => {
-//     res.status(400).send(e);
-//   })
-// });
-
+// for checking Authentication
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
+});
 
 app.listen(3000 , ()=>{
     console.log(`Listinening port ${port}`);
