@@ -1,5 +1,5 @@
-var express = require('express');
-var bodyparser = require('body-parser');
+const express = require('express');
+const bodyparser = require('body-parser');
 const _ = require('lodash');
 var {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');
@@ -96,6 +96,36 @@ app.patch('/todos/:id', (req, res) => {
     res.status(400).send();
   });
 });
+
+/*
+    User Security and Authentication starts here
+*/
+app.post('/users',(req,res) =>{
+
+    var body = _.pick(req.body, ['email', 'password']);
+    var nuser = new user(body);
+    nuser.save().then(()=>{
+       return nuser.generateAuthToken();
+    }).then((token) => {
+    res.header('x-auth', token).send(nuser);
+  }).catch((e) => {
+    res.status(400).send(e);
+  })
+});
+
+// app.post('/users', (req, res) => {
+//   var body = _.pick(req.body, ['email', 'password']);
+//   var user = new User(body);
+
+//   user.save().then(() => {
+//     return user.generateAuthToken();
+//   }).then((token) => {
+//     res.header('x-auth', token).send(user);
+//   }).catch((e) => {
+//     res.status(400).send(e);
+//   })
+// });
+
 
 app.listen(3000 , ()=>{
     console.log(`Listinening port ${port}`);
