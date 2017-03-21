@@ -53,7 +53,7 @@ app.get('/todos/:id',(req,res)=>{
 });
 
 app.listen(3000 , ()=>{
-    console.log(`Listinening port ${port`);
+    console.log(`Listinening port ${port}`);
 });
 // var newuser = new user({
    
