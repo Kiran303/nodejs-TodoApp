@@ -11,46 +11,66 @@ var port = process.env.PORT || 3000;
 
 app.use(bodyparser.json());
 
-app.post('/todos',(req,res) =>{
+// app.post('/todos',(req,res) =>{
 
-    var ntodo = new todo({
-        text : req.body.text
-    });
+//     var ntodo = new todo({
+//         text : req.body.text
+//     });
 
-    ntodo.save().then((doc)=>{
-       res.send(JSON.stringify(doc,undefined,2));
-    },(e) =>{
-       res.send('Error While Saving DAta',e);
-    });
-})
+//     ntodo.save().then((doc)=>{
+//        res.send(JSON.stringify(doc,undefined,2));
+//     },(e) =>{
+//        res.send('Error While Saving DAta',e);
+//     });
+// });
 
 
-app.get('/todos',(req,res)=>{
-    todo.find().then((doc)=>{
-        res.send({doc});
-        console.log('in success');
-    },(err)=>{
-        console.log(err);
-    })
-});
+// app.get('/todos',(req,res)=>{
+//     todo.find().then((doc)=>{
+//         res.send({doc});
+//         console.log('in success');
+//     },(err)=>{
+//         console.log(err);
+//     })
+// });
 
-//To access data by id i todos
-app.get('/todos/:id',(req,res)=>{
+// //To access data by id i todos
+// app.get('/todos/:id',(req,res)=>{
+//     var id = req.params.id;
+//     if(!ObjectID.isValid(id)){
+//         res.status(404).send('Id Is Not Correct');
+//     }
+
+//     todo.findById(id).then((todos)=>{
+//         if(!todos){
+//             res.status(404).send();
+//         }
+//         res.send({todos});
+//     }).catch((e)=>{
+//         res.status(400).send();
+//     });
+
+// });
+
+//To delete records by id
+app.delete('/todos/:id',(req,res)=>{
     var id = req.params.id;
-    if(!ObjectID.isValid(id)){
-        res.status(404).send('Id Is Not Correct');
+     if(!ObjectID.isValid(id)){
+        return res.status(404).send('Id Is Not Correct');
     }
 
-    todo.findById(id).then((todos)=>{
-        if(!todos){
-            res.status(404).send();
+    todo.findByIdAndRemove(id).then((result)=>{
+        if(!result){
+            return res.status(404).send();
         }
-        res.send({todos});
+        console.log(`Deleted record is : ${result}`);
+        res.status(200).send({result});
     }).catch((e)=>{
         res.status(400).send();
     });
-
 });
+
+
 
 app.listen(3000 , ()=>{
     console.log(`Listinening port ${port}`);
